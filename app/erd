@@ -1,0 +1,18 @@
+@startuml
+class Record {
+int _id
+int amount
+long timestamp
+Account account
+}
+class Account {
+int _id
+String name
+Currency currency
+}
+class Currency {
+int _id
+String name
+String abbreviation
+}
+@enduml
