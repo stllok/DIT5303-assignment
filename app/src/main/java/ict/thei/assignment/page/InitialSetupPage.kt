@@ -21,6 +21,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -37,12 +39,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -101,8 +106,10 @@ class InitialSetupPage : ComponentActivity() {
                                 db.recordDao().insertAll(
                                     RecordInsert(
                                         "Initial setup",
+                                        "",
                                         account_balance_mutex.value.toLong(),
-                                        db.accountDao().get(1)!!.id
+                                        db.accountDao().get(1)!!.id,
+                                        db.categoryDao().get(1)!!.id
                                     )
                                 )
 
@@ -241,6 +248,7 @@ class InitialSetupPage : ComponentActivity() {
         var password by remember { password_mutex }
         var validate by remember { mutableStateOf(false) }
         var stage by remember { stage_idx_mutex }
+        var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
         val validator = {
             validate = password.isNotEmpty()
@@ -274,7 +282,21 @@ class InitialSetupPage : ComponentActivity() {
                         validator()
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Password") })
+                    label = { Text("Password") },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        val image = if (passwordVisible)
+                            Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff
+
+                        // Please provide localized description for accessibility services
+                        val description = if (passwordVisible) "Hide password" else "Show password"
+
+                        IconButton(onClick = {passwordVisible = !passwordVisible}){
+                            Icon(imageVector  = image, description)
+                        }
+                    })
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),

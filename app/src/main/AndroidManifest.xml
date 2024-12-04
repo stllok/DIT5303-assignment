@@ -19,6 +19,9 @@
             android:name=".page.InitialSetupPage"
             android:exported="false" />
         <activity
+            android:name=".page.RecordForm"
+            android:exported="false" />
+        <activity
             android:name=".page.LandingPage"
             android:exported="true"
             android:label="@string/app_name"

@@ -30,10 +30,15 @@ android {
             // Android Gradle plugin.
             isShrinkResources = true
 
+            isDebuggable = false
+
+
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            renderscriptOptimLevel = 3
         }
     }
     compileOptions {

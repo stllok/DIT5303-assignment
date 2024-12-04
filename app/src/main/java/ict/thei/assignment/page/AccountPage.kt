@@ -75,7 +75,7 @@ private fun AccountCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(),
+            .padding()
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
             Row(

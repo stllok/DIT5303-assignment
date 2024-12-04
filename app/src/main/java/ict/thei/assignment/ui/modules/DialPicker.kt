@@ -51,7 +51,10 @@ private fun TimePickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm() }) {
+            TextButton(onClick = {
+                onConfirm()
+                onDismiss()
+            }) {
                 Text("OK")
             }
         },
@@ -63,6 +66,6 @@ private fun TimePickerDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun Preview(){
+private fun Preview() {
     DialPickerDialog({}, {})
 }
