@@ -23,7 +23,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -35,12 +34,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ict.thei.assignment.ui.modules.DatePickerModal
+import ict.thei.assignment.db.AppDatabase
+import ict.thei.assignment.ui.modules.DatePickerDialog
+import ict.thei.assignment.ui.modules.DialPickerDialog
+import ict.thei.assignment.ui.modules.EasyModalBottomSheet
 
 class RecordForm : ComponentActivity() {
+    val db by lazy { AppDatabase.newInstance(applicationContext) }
+
     // State
     var datePickerMutex = mutableStateOf(false)
     var timePickerMutex = mutableStateOf(false)
+    var categoryPickerMutex = mutableStateOf(false)
+    var accountPickerMutex = mutableStateOf(false)
 
     // Data mutex
     var titleMutex = mutableStateOf("")
@@ -50,6 +56,12 @@ class RecordForm : ComponentActivity() {
     var accountIdxMutex = mutableIntStateOf(-1)
     var dateMutex = mutableStateOf("")
     var timeMutex = mutableStateOf("")
+
+    val accountDb = db.accountDao()
+    val categoryDb = db.categoryDao()
+
+    val categories = categoryDb.getAll()
+    val accounts = accountDb.getAll()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,13 +77,15 @@ class RecordForm : ComponentActivity() {
     private fun page() {
         var title by remember { titleMutex }
         var description by remember { descriptionMutex }
-        var amount by remember {amountMutex}
+        var amount by remember { amountMutex }
         var categoryIdx by remember { categoryIdxMutex }
-        var accountIdx by remember { accountIdxMutex}
-        var date by remember {dateMutex}
-        var time by remember {timeMutex}
-        var datePicker by remember {datePickerMutex}
-        var timePicker by remember {timePickerMutex}
+        var accountIdx by remember { accountIdxMutex }
+        var date by remember { dateMutex }
+        var time by remember { timeMutex }
+        var datePicker by remember { datePickerMutex }
+        var timePicker by remember { timePickerMutex }
+        var categoryPicker by remember { categoryPickerMutex }
+        var accountPicker by remember { accountPickerMutex }
 
         Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
             TopAppBar(
@@ -101,7 +115,7 @@ class RecordForm : ComponentActivity() {
                 TextField(
                     value = title,
                     label = { Text("Title") },
-                    onValueChange = { title = it},
+                    onValueChange = { title = it },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
@@ -110,10 +124,13 @@ class RecordForm : ComponentActivity() {
                 OutlinedTextField(
                     value = description,
                     label = { Text("Description") },
-                    onValueChange = {description = it},
+                    onValueChange = { description = it },
                     modifier = Modifier.fillMaxWidth()
                 )
-                OutlinedButton (onClick = {}, modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    onClick = { categoryPicker = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text("Category: Not selected")
                 }
                 OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) {
@@ -121,11 +138,14 @@ class RecordForm : ComponentActivity() {
                 }
                 OutlinedTextField(
                     value = amount.toString(),
-                    onValueChange = { amount = it.toInt()},
+                    onValueChange = { amount = it.toInt() },
                     label = { Text("Amount") },
                     modifier = Modifier.fillMaxWidth()
                 )
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround){
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
                     OutlinedButton(onClick = {}) {
                         Text("Date: Not selected")
                     }
@@ -134,7 +154,48 @@ class RecordForm : ComponentActivity() {
                     }
                 }
                 if (datePicker) {
-                    DatePickerModal(onDateSelected = {}, onDismiss = {})
+                    DatePickerDialog(onDateSelected = {}, onDismiss = {datePicker = false})
+                }
+                if (timePicker) {
+                    DialPickerDialog(onConfirm = { time -> }, onDismiss = {timePicker = false})
+                }
+                if (categoryPicker) {
+                    CategoryMoral()
+                }
+                if (accountPicker) {
+                    AccountMoral()
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun CategoryMoral() {
+        var categoryIdx by remember { categoryIdxMutex }
+        var categoryPicker by remember { categoryPickerMutex }
+        EasyModalBottomSheet(categoryPickerMutex) {
+            categories.forEachIndexed { i, it ->
+                Button(onClick = {
+                    categoryIdx = i
+                    categoryPicker = false
+                }) {
+                    Text(it.name)
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun AccountMoral() {
+        var accountIdx by remember { accountIdxMutex }
+        var accountPicker by remember { accountPickerMutex }
+        EasyModalBottomSheet(categoryPickerMutex) {
+            accounts.forEachIndexed { i, it ->
+                Button(onClick = {
+                    accountIdx = i
+                    accountPicker = false
+                }) {
+                    Text(it.name)
                 }
             }
         }
@@ -142,7 +203,7 @@ class RecordForm : ComponentActivity() {
 
     @Preview
     @Composable
-    private fun preview() {
+    private fun Preview() {
         page()
     }
 }

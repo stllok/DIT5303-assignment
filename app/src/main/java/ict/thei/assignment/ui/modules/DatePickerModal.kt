@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 // Example from https://developer.android.com/develop/ui/compose/components/datepickers?hl=zh-cn
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerModal(
+fun DatePickerDialog(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -40,6 +40,6 @@ fun DatePickerModal(
 
 @Preview
 @Composable
-private fun preview(){
-    DatePickerModal(onDateSelected = {}, onDismiss = {})
+private fun preview() {
+    DatePickerDialog(onDateSelected = {}, onDismiss = {})
 }
