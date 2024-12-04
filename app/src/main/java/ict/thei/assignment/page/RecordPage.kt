@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,12 +38,12 @@ fun RecordPage(modifier: Modifier, appDb: AppDatabase) {
     val stateDate = ""
 
 
-    Scaffold(modifier = Modifier.fillMaxSize(),topBar = {
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
         TopAppBar(
             title = { Text("Record", fontWeight = FontWeight.Bold) },
             navigationIcon = {
 //                IconButton(onClick = {}) {
-//                    Icon(Icons.Filled.Menu, null)
+//                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
 //                }
             },
             actions = {
@@ -60,7 +59,7 @@ fun RecordPage(modifier: Modifier, appDb: AppDatabase) {
             records.forEach {
                 val account = accountDb.get(it.accountId)
                 val currency = currencyDb.get(account!!.currencyId)
-                var tmpDate =  getDateInstance().format(Date(it.recordAt))
+                var tmpDate = getDateInstance().format(Date(it.recordAt))
 
                 if (tmpDate != stateDate) {
                     Text(

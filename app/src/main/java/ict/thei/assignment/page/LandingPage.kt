@@ -2,6 +2,8 @@ package ict.thei.assignment.page
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,6 +31,7 @@ import ict.thei.assignment.db.AppDatabase
 import ict.thei.assignment.db.CategoryInsert
 import ict.thei.assignment.db.CurrencyInsert
 import ict.thei.assignment.ui.theme.AssignmentTheme
+import kotlinx.coroutines.Runnable
 
 class LandingPage : ComponentActivity() {
     val db by lazy { AppDatabase.newInstance(applicationContext) }
@@ -52,12 +55,16 @@ class LandingPage : ComponentActivity() {
             }
         }
 
-
-        if (db.accountDao().getAll().isEmpty()) {
-            inializeSetup()
-        } else {
-            jumpToMain()
-        }
+        // Add delay to make user think it is loading LOL
+        Handler(Looper.getMainLooper()).postDelayed(
+            Runnable {
+                if (db.accountDao().getAll().isEmpty()) {
+                    inializeSetup()
+                } else {
+                    jumpToMain()
+                }
+            }, 1000
+        )
     }
 
     private fun inializeSetup() {

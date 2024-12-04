@@ -59,9 +59,11 @@ interface AccountDao {
     @Update
     fun update(account: Account)
 
-    @Query("SELECT SUM(r.amount) FROM account a " +
-            "INNER JOIN record r " +
-            "ON a.rowid = r.accountId " +
-            "WHERE a.rowid = :accountId")
+    @Query(
+        "SELECT SUM(r.amount) FROM account a " +
+                "INNER JOIN record r " +
+                "ON a.rowid = r.accountId " +
+                "WHERE a.rowid = :accountId"
+    )
     fun totalBalance(accountId: Long): Long
 }
